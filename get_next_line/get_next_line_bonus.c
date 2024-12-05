@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: husamuel <husamuel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: husamuel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/28 11:07:04 by husamuel          #+#    #+#             */
-/*   Updated: 2024/11/07 10:04:09 by husamuel         ###   ########.fr       */
+/*   Created: 2024/11/05 21:41:56 by husamuel          #+#    #+#             */
+/*   Updated: 2024/11/05 21:41:58 by husamuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*init_line(char *stash, int *end_loc)
 {
@@ -27,8 +27,7 @@ char	*init_line(char *stash, int *end_loc)
 	len = 0;
 	while (stash[len] && stash[len] != '\n')
 		len++;
-	if (stash[len] == '\n')
-		len++;
+	len++;
 	line = malloc(sizeof(char) * (len + 1));
 	if (!line)
 		return (NULL);
@@ -45,8 +44,8 @@ size_t	locate_end(char *line)
 
 	i = 0;
 	if (!line)
-		return (0);
-	while (line[i])
+		return (-1);
+	while (i < BUFFER_SIZE)
 	{
 		if (line[i] == '\n' || line[i] == '\0')
 			return (i + 1);
@@ -72,7 +71,7 @@ char	*extract_line(char *line, char *stash, int *end_loc, int fd)
 			return (NULL);
 		}
 		line_size = locate_end(buffer);
-		ft_strlcpy(&stash[0], &buffer[line_size], (BUFFER_SIZE + 1));
+		ft_strlcpy(stash, &buffer[line_size], (BUFFER_SIZE + 1));
 		buffer[line_size] = '\0';
 		line = ft_strjoin(line, buffer, end_loc);
 		if (read_check == 0)
@@ -86,18 +85,18 @@ char	*extract_line(char *line, char *stash, int *end_loc, int fd)
 
 char	*get_next_line(int fd)
 {
-	static char	stash[BUFFER_SIZE + 1];
+	static char	stash[OPEN_MAX][BUFFER_SIZE + 1];
 	char		*line;
 	int			end_loc;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || fd >= OPEN_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
 	end_loc = -1;
-	line = init_line(stash, &end_loc);
+	line = init_line(stash[fd], &end_loc);
 	if (!line)
 		return (NULL);
-	ft_strlcpy(&stash[0], &stash[end_loc + 1], BUFFER_SIZE + 1);
-	line = extract_line(line, stash, &end_loc, fd);
+	ft_strlcpy(stash[fd], &stash[fd][end_loc + 1], BUFFER_SIZE + 1);
+	line = extract_line(line, stash[fd], &end_loc, fd);
 	if (!line || line[0] == '\0')
 	{
 		free(line);
@@ -105,33 +104,3 @@ char	*get_next_line(int fd)
 	}
 	return (line);
 }
-/*
-#include <stdio.h>
-#include <fcntl.h> 
-#include <unistd.h> 
-#include "get_next_line.h"
-
-int main(void)
-{
-    int     fd; 
-    char    *line; 
-
-
-    fd = open("teste.txt", O_RDONLY);
-    if (fd == -1) {
-        perror("Erro ao abrir o arquivo");
-        return 1;
-    }
-
-
-    while ((line = get_next_line(fd)) != NULL) {
-        printf("%s", line);
-        free(line);
-    }
-
-
-    close(fd);
-
-    return 0;
-}
-*/

@@ -1,74 +1,35 @@
-NAME		=	fdf
-LIBFT		=	42-libft/
-GNL			=	get_next_line/
-MLX			=	minilibx-linux/
-LIBFT_A		=	$(addprefix $(LIBFT), libft.a)
-GNL_A		=	$(addprefix $(GNL), libgnl.a)
-MLX_A		=	$(addprefix $(MLX), libmlx.a)
+NAME = fdf
 
-CC			=	cc
-INCLUDE 	=	includes
-CFLAGS		=	-Wall -Wextra -Werror -I$(INCLUDE)
-RM			=	rm -f
-SRCS		=	fdf.c \
-				srcs/alg_utils.c \
-				srcs/controls.c \
-				srcs/mouse.c \
-				srcs/keyboard.c \
-				srcs/draw.c \
-				srcs/line_alg.c \
-				srcs/project.c \
-				srcs/parse_map.c \
-				srcs/utils.c \
+SRC = ./fdf.c \
+		./parsing.c \
+		./utils.c \
+		./connect.c \
+		./windows_manag.c \
+		./bresenham.c \
+		./isometric.c \
+		./extra_color.c \
 
-OBJS		=	$(SRCS:%.c=%.o)
+OBJS = $(SRC:.c=.o)
 
-all:			$(NAME)
+CC = cc -Wall -Wextra -Werror
 
-$(NAME):		$(OBJS) $(LIBFT_A) $(GNL_A) $(MLX_A)
-				@$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT) -lft -L$(GNL) -lgnl -L$(MLX) -lmlx -lX11 -lXext -lm -o $(NAME)
-				@echo "Linked into executable \033[0;32mfdf\033[0m."
+LIBFT = libft/libft.a
 
-$(LIBFT_A):
-				@$(MAKE) -s -C $(LIBFT)
-				@echo "Compiled $(LIBFT_A)."
+GNT = get_next_line/get_next_line.a
 
-$(GNL_A):
-				@$(MAKE) -s -C $(GNL)
-				@echo "Compiled $(GNL_A)."
+PRINT_F = ft_printf/ft_printf.a
 
-$(MLX_A):
-				@$(MAKE) -s -C $(MLX)
-				@echo "Compiled $(MLX_A)."
+${NAME}: ${OBJS}
 
-bonus:			all
+	$(MAKE) -C libft
+	$(MAKE) -C mlx
+	${CC} -o $(NAME) $(OBJS) $(LIBFT) $(MLX_FLAG)
 
-.c.o:
-				@$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)
-				@echo "Compiling $<."
+all: ${NAME}
 
-localclean:
-				@$(RM) $(OBJS)
-				@echo "Removed object files."
 
-clean:			localclean
-				@$(MAKE) clean -s -C $(LIBFT)
-				@echo "Clean libft."
-				@$(MAKE) clean -s -C $(GNL)
-				@echo "Clean gnl."
-				@$(MAKE) clean -s -C $(MLX)
-				@echo "Clean mlx."
+clean:
 
-fclean:			localclean
-				@$(MAKE) fclean -s -C $(LIBFT)
-				@echo "Full clean libft."
-				@$(MAKE) fclean -s -C $(GNL)
-				@echo "Full clean gnl."
-				@$(MAKE) clean -s -C $(MLX)
-				@echo "Clean mlx."
-				@$(RM) $(NAME)
-				@echo "Removed executable."
+fclean:
 
-re:				fclean all
-
-.PHONY:			all clean fclean re localclean bonus
+re:

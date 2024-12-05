@@ -1,26 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: husamuel <husamuel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: husamuel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/28 18:04:59 by husamuel          #+#    #+#             */
-/*   Updated: 2024/11/05 10:55:38 by husamuel         ###   ########.fr       */
+/*   Created: 2024/11/05 21:42:17 by husamuel          #+#    #+#             */
+/*   Updated: 2024/11/05 21:42:18 by husamuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1
+# endif
+
+# ifndef OPEN_MAX
+#  define OPEN_MAX 1024 //ulimit -n
 # endif
 
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <limits.h>
+# include <stddef.h>
 
 char	*get_next_line(int fd);
 char	*extract_line(char *line, char *stash, int *eol_loc, int fd);

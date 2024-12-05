@@ -1,82 +1,77 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fdf.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: husamuel <husamuel@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/03 20:39:18 by husamuel          #+#    #+#             */
+/*   Updated: 2024/12/05 10:26:21 by husamuel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 
-static t_fdf *ft_init(const char *path)
+static int	check_the_map(char *file_name, t_point **head)
 {
-    t_fdf   *env;
-    char    *title;
+	int	fd;
+	char	*help_line;
+	char	**map;
+	int		rows;
+	int		columns;
 
-    title = ft_strjoin("Fdf - ", path);
-    env = (t_fdf *)malloc(sizeof(t_fdf));
-    if (!env)
-        ft_return_error("malloc error", 1);
-    env->mlx = mlx_init();
-	if (!env->mlx)
-		ft_return_error("error connecting to graphics server", 1);
-	env->win = mlx_new_window(env->mlx, WIDTH, HEIGHT, title);
-	if (!env->win)
-		ft_return_error("error initializing window", 1);
-    free(title);
-	env->img = mlx_new_image(env->mlx, WIDTH, HEIGHT);
-	if (!env->img)
-		ft_return_error("error initializing image", 1);
-	env->data_addr = mlx_get_data_addr(env->img, &env->bpp, &env->size_line,
-			&env->endian);
-	env->map = NULL;
-	env->camera = NULL;
-	env->mouse = (t_mouse *)malloc(sizeof(t_mouse));
-	if (!env->mouse)
-		ft_return_error("error initializing mouse", 1);
-	return (env);
-}
-
-static t_camera	*ft_camera_init(t_fdf *env)
-{
-    t_camera    *camera;
-
-    camera = (t_camera *)malloc(sizeof(t_camera));
-	if (!camera)
-		ft_return_error("error initializing camera", 1);
-	camera->zoom = ft_min(WIDTH / env->map->width / 2,
-			HEIGHT / env->map->height / 2);
-	camera->x_angle = -0.615472907;
-	camera->y_angle = -0.523599;
-	camera->z_angle = 0.615472907;
-	camera->z_height = 1;
-	camera->x_offset = 0;
-	camera->y_offset = 0;
-	camera->iso = 1;
-	return (camera);
-}
-
-static t_map	*ft_map_init(void)
-{
-    t_map   *map;
-
-	map = (t_map *)malloc(sizeof(t_map));
-	if (!map)
-		ft_return_error("error initializing map", 1);
-	map->height = 0;
-	map->width = 0;
-	map->array = NULL;
-	map->z_max = 0;
-	map->z_min = 0;
-	return (map);
-}
-
-int	main(int argc, char *argv[])
-{
-	t_fdf	*env;
-
-	if (argc == 2)
+	rows = 0;
+	columns = 0;
+	fd = open(file_name, O_RDONLY);
+	if(fd == -1)
+		exit (0);
+	while ((help_line = get_next_line(fd)) != NULL)
 	{
-		env = ft_init(argv[1]);
-		env->map = ft_map_init();
-		ft_check_valid(argv[1], env->map);
-		env->camera = ft_camera_init(env);
-		ft_hook_controls(env);
-		ft_draw(env->map, env);
-		mlx_loop(env->mlx);
+		map = ft_split(help_line, ' ');
+		while (map[rows])
+		{
+			create_node(head, rows, columns, map[rows]);
+			rows++;			
+		}
+		rows = 0;
+		columns = increment_and_free(columns, help_line, map);
 	}
-	else
-		ft_return_error("Usage: ./fdf <filename>", 0);
+	return (0);
+}
+
+static int	check_the_extension(char *name_of_map)
+{
+	int	len;
+
+	len = strlen(name_of_map);
+	if (len < 4)
+	{
+		ft_printf("\033[1;41mmap name is very short!\033[0m\n");
+		return (0);
+	}
+	if (strncmp(name_of_map + len - 4, ".fdf", 4) == 0)
+	{
+		return (0);
+	}
+	ft_printf("\033[1;41mNot a valid .fdf extension\033[0m\n");
+	return (1);
+}
+
+int	main(int ac, char **av)
+{
+	t_point *head;
+	t_date	info_map;
+	
+	head = NULL;
+	if (ac != 2)
+		return (ft_printf("Wrong number of arguments\n"));
+
+	info_map.width = DEFAULT_WIDTH;
+	info_map.height = DEFAULT_HEIGHT;
+	if (check_the_extension(av[1]) || check_the_map(av[1], &head))
+		exit(0);
+	info_map.map_name = av[1];
+	check_and_count(head, &info_map);
+	new_windows(&info_map, &head);
+	return (0);
 }
