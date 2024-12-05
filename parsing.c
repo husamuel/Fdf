@@ -43,7 +43,12 @@ void	create_node(t_point **head, int x, int y, char *z_string)
 	if (*head == NULL)
 		*head = new_node;
 	else
-		ft_lstlastback(head, new_node);
+	{
+		current = *head;
+		while (current->next != NULL)
+			current = current->next;
+		current->next = new_node;
+	}
 	free(z_string);
 }
 

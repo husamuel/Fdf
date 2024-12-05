@@ -13,9 +13,10 @@
 #ifndef FDF_H
 # define FDF_H
 
-# include "minilibx/mlx.h"
+# include "mlx/mlx.h"
 # include "libft/libft.h"
 # include "get_next_line/get_next_line.h"
+# include "ft_printf/ft_printf.h"
 # include <math.h>
 # include <fcntl.h>
 # include <sys/stat.h>

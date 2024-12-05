@@ -72,9 +72,9 @@ char	*extract_line(char *line, char *stash, int *end_loc, int fd)
 			return (NULL);
 		}
 		line_size = locate_end(buffer);
-		ft_strlcpy(&stash[0], &buffer[line_size], (BUFFER_SIZE + 1));
+		ft_strllcpy(&stash[0], &buffer[line_size], (BUFFER_SIZE + 1));
 		buffer[line_size] = '\0';
-		line = ft_strjoin(line, buffer, end_loc);
+		line = ft_strvjoin(line, buffer, end_loc);
 		if (read_check == 0)
 		{
 			ft_bzero(stash, BUFFER_SIZE + 1);
@@ -96,7 +96,7 @@ char	*get_next_line(int fd)
 	line = init_line(stash, &end_loc);
 	if (!line)
 		return (NULL);
-	ft_strlcpy(&stash[0], &stash[end_loc + 1], BUFFER_SIZE + 1);
+	ft_strllcpy(&stash[0], &stash[end_loc + 1], BUFFER_SIZE + 1);
 	line = extract_line(line, stash, &end_loc, fd);
 	if (!line || line[0] == '\0')
 	{
