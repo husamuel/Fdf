@@ -60,11 +60,9 @@ int	color_zed(char *input, t_point *new_node)
 {
 	int	i;
 	int	z;
-	int	color;
 
 	i = 0;
 	z = 0;
-	color = 0;
 	while (input[i] != ',' && input[i] != '\0')
 	{
 		z = (z * 10) + (input[i] - '0');

@@ -2,7 +2,6 @@ NAME = fdf
 
 SRC = ./fdf.c \
 		./parsing.c \
-		./utils.c \
 		./connect.c \
 		./windows_manag.c \
 		./bresenham.c \
@@ -22,7 +21,7 @@ PRINT_F = ft_printf/ft_printf.a
 
 MLX = mlx/libmlx.a
 
-MLX_FLAG = -Lmlx -lmlx -framework OpenGL -framework AppKit
+MLX_FLAG = -Lmlx -lmlx -lXext -lX11 -lm
 
 all: ${NAME}
 

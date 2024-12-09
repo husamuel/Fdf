@@ -104,7 +104,6 @@ void	int_to_pixel(t_date *info, t_point **head);
 void	int_to_isometric_pixel(t_date *info, t_point **head);
 /*Adding the function to draw in the image*/
 void	bresenham(t_date *info, t_point *start, t_point *end);
-void	old_bresenham(t_date *info, t_point *start, t_point *end);
 void	draw_point(t_date *info, int x, int y, t_point *point);
 void	draw_lines(t_date *info, t_point **head);
 /* using other function too*/

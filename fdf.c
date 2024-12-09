@@ -46,14 +46,14 @@ static int	check_the_extension(char *name_of_map)
 	len = strlen(name_of_map);
 	if (len < 4)
 	{
-		ft_printf("\033[1;41mmap name is very short!\033[0m\n");
+		ft_printf("map name is very short!\n");
 		return (0);
 	}
 	if (strncmp(name_of_map + len - 4, ".fdf", 4) == 0)
 	{
 		return (0);
 	}
-	ft_printf("\033[1;41mNot a valid .fdf extension\033[0m\n");
+	ft_printf("Not a valid .fdf extension\n");
 	return (1);
 }
 

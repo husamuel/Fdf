@@ -50,3 +50,15 @@ int	point_connect(t_point **head)
 	}
 	return (0);
 }
+
+void	draw_point(t_date *info, int x, int y, t_point *point)
+{
+	if (x >= 0 && x < info->width && y >= 0 && y < info->height)
+	{
+		if (point->color == 0)
+			my_mlx_pixel_put(info, x, y, 0xFFFFFF);
+		else
+			my_mlx_pixel_put(info, x, y, point->color);
+	}
+	return ;
+}

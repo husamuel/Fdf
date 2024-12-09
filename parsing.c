@@ -35,7 +35,7 @@ void	create_node(t_point **head, int x, int y, char *z_string)
 	new_node->x_map = x;
 	new_node->y_map = y;
 	new_node->z_map = check_commas(z_string, new_node);
-	new_node->x_pixel = 0;
+	new_node->x_pixel = ;
 	new_node->y_pixel = 0;
 	new_node->go_right = NULL;
 	new_node->go_down = NULL;
@@ -62,8 +62,9 @@ void	space_and_scale(t_date *inf)
 	width_scale = inf->width / big_line;
 	hight_scale = inf->height / big_line;
 	inf->scaling = fmin(width_scale, hight_scale);
-	inf->center_x = (inf->width - (inf->scaling * (inf->columns - 1))) / 2;
-	inf->center_y = (inf->height - (inf->scaling * (inf->rows - 1))) / 2;
+	inf->center_x = inf->width / 4;
+	inf->center_y = inf->height / 4;
+
 }
 
 void	check_and_count(t_point *head, t_date *info_map)

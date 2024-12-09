@@ -44,8 +44,8 @@ void	new_windows(t_date *help, t_point **head)
 	mlx_hook(help->window, 2, 1, key_pressed, help);
 	mlx_hook(help->window, 17, 0, window_close, help);
 	draw_lines(help, head);
-	mlx_put_image_to_window(help->mlx, help->window, help->img_pointer, 0, 0);	
-	mlx_string_put(help->mlx, help->window, 540, 0, 0xFF0000, "atucci FDF, no bonus :(");
+	mlx_put_image_to_window(help->mlx, help->window, help->img_pointer, 0, 0);
+	mlx_string_put(help->mlx, help->window, 540, 0, 0xFFFFFF, "atucci FDF, no bonus :(");
 	free_list(*head);
 	mlx_loop(help->mlx);
 	return ;

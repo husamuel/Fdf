@@ -40,3 +40,11 @@ void	draw_lines(t_date *info, t_point **head)
 		current = current->next;
 	}
 }
+
+void	my_mlx_pixel_put(t_date *data, int x, int y, int color)
+{
+	char	*dst;
+
+	dst = data->img_string + (y * data->lsize + x * (data->bits / 8));
+	*(unsigned int *)dst = color;
+}
