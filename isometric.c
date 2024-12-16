@@ -1,50 +1,62 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   isometric.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: husamuel <husamuel@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/05 09:52:32 by husamuel          #+#    #+#             */
-/*   Updated: 2024/12/05 11:12:26 by husamuel         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "fdf.h"
 
-void	int_to_isometric_pixel(t_date *info, t_point **head)
-{
-	t_point *current;
+t_point *create_node(char *map_point, int i, int j) {
+    t_point *point = malloc(sizeof(t_point));
+    if (!point)
+        return (NULL);
 
-	current = *head;
-	while (current != NULL)
-	{
-		current->x_pixel = (info->center_x) + ((current->x_map - current->y_map) * cos(PI / 6) * info->scaling);
+    point->x = j;
+    point->y = i;
+    point->z = ft_atoi(map_point);
+    point->next = NULL;
 
-		current->y_pixel = (info->center_y) - (current->z_map * sin(PI / 6) * info->scaling) 
-                 + ((current->x_map + current->y_map) * sin(PI / 6) * info->scaling);
-		current = current->next;
-	}
+    return (point);
 }
 
-void	draw_lines(t_date *info, t_point **head)
+t_point *cords_reader(t_date *info)
 {
-	t_point *current;
-	current = *head;
-	while (current)
-	{
-		if(current->go_right)
-			bresenham(info, current, current->go_right);
-		if (current->go_down)
-			bresenham(info, current, current->go_down);
-		current = current->next;
-	}
+    char ***map = info->map;
+    t_point *list = NULL;
+    t_point *node;
+    int i = 0;
+    int j;
+
+    while (i < info->height) {
+        j = 0;
+        while (j < info->width) {
+            if (map[i] && map[i][j]) {
+                printf("Lendo a coordenada [%d][%d]: %s\n", i, j, map[i][j]);
+                node = create_node(map[i][j], i, j);
+                if (!node) {
+                    fprintf(stderr, "Erro: Falha ao criar o nó para a posição [%d][%d]\n", i, j);
+                    break;
+                }
+                ft_point_add_back(&list, node);
+            } else {
+                fprintf(stderr, "Erro: Posição inválida no mapa em [%d][%d]\n", i, j);
+                break;
+            }
+            j++;
+        }
+        i++;
+    }
+
+    return (list);
 }
 
-void	my_mlx_pixel_put(t_date *data, int x, int y, int color)
-{
-	char	*dst;
 
-	dst = data->img_string + (y * data->lsize + x * (data->bits / 8));
-	*(unsigned int *)dst = color;
+t_point *isometric(t_date *info)
+{
+    t_point *head;
+    t_point *list;
+
+    list = cords_reader(info);
+    head = list;
+
+    while (head) {
+        head->x_pixel = (WIDTH / 2) + ((head->x - head->y) * cos(PI / 6));
+        head->y_pixel = (HEIGHT / 2) - (head->z * sin(PI / 6)) + ((head->x + head->y) * sin(PI / 6));
+        head = head->next;
+    }
+    return (list);
 }

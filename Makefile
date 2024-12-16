@@ -2,15 +2,13 @@ NAME = fdf
 
 SRC = ./fdf.c \
 		./parsing.c \
-		./connect.c \
-		./windows_manag.c \
-		./bresenham.c \
+		./window.c \
 		./isometric.c \
-		./extra_color.c \
+		./utils.c \
 
 OBJS = $(SRC:.c=.o)
 
-CC = cc -Wall -Wextra -Werror
+CC = cc -Wall -Wextra -Werror -g
 CFLAGS = -I ./libft -I ./get_next_line -I ./ft_printf -I ./mlx
 
 LIBFT = libft/libft.a
