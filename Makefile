@@ -5,6 +5,9 @@ SRC = ./fdf.c \
 		./window.c \
 		./isometric.c \
 		./utils.c \
+		./bresenham.c \
+		./connect_points.c \
+		./color.c \
 
 OBJS = $(SRC:.c=.o)
 
@@ -17,9 +20,9 @@ GNT = get_next_line/get_next_line.a
 
 PRINT_F = ft_printf/ft_printf.a
 
-MLX = mlx/libmlx.a
+MLX = minilibx-linux/minilibx-linux/libmlx.a
 
-MLX_FLAG = -Lmlx -lmlx -lXext -lX11 -lm
+MLX_FLAG = -Lmlx -lXext -lX11 -lm
 
 all: ${NAME}
 
@@ -28,7 +31,7 @@ ${NAME}: ${OBJS}
 	$(MAKE) -C libft
 	$(MAKE) -C get_next_line
 	$(MAKE) -C ft_printf
-	$(MAKE) -C mlx
+	$(MAKE) -C minilibx-linux/minilibx-linux
 	${CC} -o $(NAME) $(OBJS) $(LIBFT) $(GNT) $(PRINT_F) $(MLX) $(MLX_FLAG)
 
 .c.o:
@@ -39,7 +42,7 @@ clean:
 	$(MAKE) -C libft clean
 	$(MAKE) -C get_next_line clean
 	$(MAKE) -C ft_printf clean
-	$(MAKE) -C mlx clean
+	$(MAKE) -C minilibx-linux/minilibx-linux clean
 
 fclean: clean
 	rm -f $(NAME)

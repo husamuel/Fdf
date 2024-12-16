@@ -59,7 +59,7 @@ void parser(t_date *info)
 
     info->height = count_rows(info->arg_map);
 
-    map = malloc((info->height + 1) * sizeof(char **));  // +1 para o NULL no final
+    map = malloc((info->height + 1) * sizeof(char **));
     if (!map) {
         perror("Erro de alocação de memória para o mapa");
         close(fd);
@@ -74,7 +74,7 @@ void parser(t_date *info)
 
     i = 0;
     while ((line = get_next_line(fd)) != NULL) {
-        map[i] = ft_split(line, ' ');  // Aqui você divide a linha
+        map[i] = ft_split(line, ' ');
         free(line);
 
         if (!map[i]) {
@@ -82,7 +82,6 @@ void parser(t_date *info)
             break;
         }
 
-        // Garantir que cada linha termine com NULL
         int j = 0;
         while (map[i][j] != NULL) {
             j++;

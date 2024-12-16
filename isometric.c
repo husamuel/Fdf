@@ -7,16 +7,25 @@ t_point *create_node(char *map_point, int i, int j) {
 
     point->x = j;
     point->y = i;
-    point->z = ft_atoi(map_point);
-    point->next = NULL;
-
+    point->z = check_commas(map_point, point);
+	point->color = 0;
+	point->x_pixel = 0;
+	point->y_pixel = 0;
+	point->point_right = NULL;
+	point->point_down = NULL;
+	point->next = NULL;
     return (point);
 }
 
-t_point *cords_reader(t_date *info)
+t_point **cords_reader(t_date *info)
 {
     char ***map = info->map;
-    t_point *list = NULL;
+    t_point **list = malloc(sizeof(t_point *));  // Aloca memória corretamente para a lista de pontos
+    if (!list)
+        return NULL;
+
+    *list = NULL;  // Inicializa a lista como vazia
+
     t_point *node;
     int i = 0;
     int j;
@@ -25,15 +34,13 @@ t_point *cords_reader(t_date *info)
         j = 0;
         while (j < info->width) {
             if (map[i] && map[i][j]) {
-                printf("Lendo a coordenada [%d][%d]: %s\n", i, j, map[i][j]);
                 node = create_node(map[i][j], i, j);
                 if (!node) {
                     fprintf(stderr, "Erro: Falha ao criar o nó para a posição [%d][%d]\n", i, j);
                     break;
                 }
-                ft_point_add_back(&list, node);
+                ft_point_add_back(list, node);  // Adiciona o nó na lista
             } else {
-                fprintf(stderr, "Erro: Posição inválida no mapa em [%d][%d]\n", i, j);
                 break;
             }
             j++;
@@ -41,22 +48,34 @@ t_point *cords_reader(t_date *info)
         i++;
     }
 
-    return (list);
+    return list;
 }
 
 
-t_point *isometric(t_date *info)
+t_point **isometric(t_date *info)
 {
     t_point *head;
-    t_point *list;
+    t_point **list;
 
     list = cords_reader(info);
-    head = list;
+    if (!list || !*list)
+        return NULL;
 
+    head = *list;
     while (head) {
-        head->x_pixel = (WIDTH / 2) + ((head->x - head->y) * cos(PI / 6));
-        head->y_pixel = (HEIGHT / 2) - (head->z * sin(PI / 6)) + ((head->x + head->y) * sin(PI / 6));
+		printf(" %d %d %d, ", head->x, head->y, head->z);
+		head->x_pixel = (info->center_x) + ((head->x - head->y) * cos(PI / 6) * info->scaling); 
+		head->y_pixel = (info->center_y) - (head->z * sin(PI / 6) * info->scaling * 20) + ((head->x + head->y) * sin(PI / 6) * info->scaling);
         head = head->next;
     }
-    return (list);
+    return list;
+}
+
+
+void	my_mlx_pixel_put(t_date *info, int x, int y, int color)
+{
+	char	*dst;
+
+	dst = info->img_string + (y * info->lsize + x * (info->bits / 8));
+	*(unsigned int *)dst = color;
 }

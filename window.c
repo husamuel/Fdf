@@ -27,31 +27,55 @@ int	window_close(void *param)
 	return (0);
 }
 
-void window(t_date *info, t_point *list)
+void window(t_date *info, t_point **list)
 {
     info->mlx = mlx_init();
     if (info->mlx == NULL)
-		exit(0);
-    ft_printf("Map width %d\n", info->width);
-    ft_printf("Map height %d", info->height);
+		exit(1);
     info->win = mlx_new_window(info->mlx, 1920, 1080, "FDF");
     info->img = mlx_new_image(info->mlx, 1920, 1080);
+	info->img_string = mlx_get_data_addr(info->img, &(info->bits), &(info->lsize), &(info->endian));
 	mlx_hook(info->win, 2, 1, key_pressed, info);
 	mlx_hook(info->win, 17, 0, window_close, info);
+	draw_lines(info, list);
 	mlx_put_image_to_window(info->mlx, info->win, info->img, 0, 0);
-    put_pixels(info, list);
     mlx_loop(info->mlx);
     return ;
 }
 
-void put_pixels(t_date *info, t_point *list)
+void	draw_point(t_date *info, int x, int y, t_point *point)
 {
-    t_point *head;
+	if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT)
+	{
+		if (point->color == 0)
+		{
+			my_mlx_pixel_put(info, x, y, 0xFFFFFF);
+		}
+		else
+		{
+			my_mlx_pixel_put(info, x, y, point->color);
+		}
+	}
+	return ;
+}
 
-    head = list;
-    while(head)
+void draw_lines(t_date *info, t_point **list)
+{
+    t_point *point;
+
+    if (!list || !*list) {
+        return;
+    }
+
+    point = *list;
+    while (point)
     {
-        mlx_pixel_put(info->mlx, info->win, head->x_pixel, head->y_pixel, 0xFFFFFF);
-        head = head->next;
+        if (point->point_right) {
+            bresenham(info, point, point->point_right);
+        }
+        if (point->point_down) {
+            bresenham(info, point, point->point_down);
+        }
+        point = point->next;
     }
 }
